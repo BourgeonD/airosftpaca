@@ -13,7 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
 
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role'        => \App\Http\Middleware\CheckRole::class,
+            'maintenance' => \App\Http\Middleware\CheckMaintenance::class,
+        ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckMaintenance::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

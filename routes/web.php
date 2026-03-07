@@ -133,6 +133,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/demandes-chef',                            [AdminController::class, 'roleRequests'])->name('role-requests');
     Route::post('/demandes-chef/{roleRequest}/approuver',   [AdminController::class, 'approveRoleRequest'])->name('role-requests.approve');
     Route::post('/demandes-chef/{roleRequest}/rejeter',     [AdminController::class, 'rejectRoleRequest'])->name('role-requests.reject');
+    Route::post('/maintenance/toggle', function() {
+        \App\Models\Setting::set('maintenance_mode', \App\Models\Setting::get('maintenance_mode') === '1' ? '0' : '1');
+        return back()->with('success', 'Mode maintenance mis à jour.');
+    })->name('admin.maintenance.toggle');
+    Route::post('/maintenance/message', function(\Illuminate\Http\Request $r) {
+        \App\Models\Setting::set('maintenance_message', $r->message);
+        return back()->with('success', 'Message mis à jour.');
+    })->name('admin.maintenance.message');
     Route::get('/signalements',                             [ProfileController::class, 'adminReports'])->name('reports');
     Route::post('/signalements/{report}/ignorer',           [ProfileController::class, 'dismissReport'])->name('reports.dismiss');
     Route::get('/escouades',                                [AdminController::class, 'squads'])->name('squads');

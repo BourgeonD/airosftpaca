@@ -1,6 +1,54 @@
 @extends('layouts.app')
 @section('title', 'Administration')
 @section('content')
+
+{{-- ── Maintenance ── --}}
+@php $maintenanceOn = \App\Models\Setting::get('maintenance_mode') === '1'; @endphp
+<div class="rounded-xl mb-6 overflow-hidden" style="background:#252a26;border:1px solid {{ $maintenanceOn ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.07)' }}">
+    <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+        <div class="flex items-center gap-3">
+            <span style="font-size:1.2rem">{{ $maintenanceOn ? '🔴' : '🟢' }}</span>
+            <div>
+                <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:{{ $maintenanceOn ? '#fca5a5' : '#86efac' }};letter-spacing:0.06em">
+                    MODE MAINTENANCE — {{ $maintenanceOn ? 'ACTIF' : 'INACTIF' }}
+                </p>
+                <p style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#4a5a4a">
+                    {{ $maintenanceOn ? 'Le site est inaccessible aux utilisateurs non-admin' : 'Le site est accessible à tous' }}
+                </p>
+            </div>
+        </div>
+        <form action="{{ route('admin.admin.maintenance.toggle') }}" method="POST">
+            @csrf
+            <button type="submit"
+                    onclick="return confirm('{{ $maintenanceOn ? 'Désactiver le mode maintenance ?' : 'Activer le mode maintenance ? Les utilisateurs seront bloqués.' }}')"
+                    class="px-5 py-2.5 rounded-lg transition"
+                    style="font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;font-size:0.85rem;
+                        {{ $maintenanceOn
+                            ? 'background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.35);color:#86efac'
+                            : 'background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#fca5a5' }}"
+                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                {{ $maintenanceOn ? '✓ DÉSACTIVER' : '⚠ ACTIVER' }}
+            </button>
+        </form>
+    </div>
+    <div class="px-5 py-4">
+        <p style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:rgba(74,222,128,0.5);margin-bottom:8px">// MESSAGE AFFICHÉ AUX UTILISATEURS</p>
+        <form action="{{ route('admin.admin.maintenance.message') }}" method="POST" class="flex gap-3">
+            @csrf
+            <input type="text" name="message"
+                   value="{{ \App\Models\Setting::get('maintenance_message') }}"
+                   class="flex-1 rounded-lg px-3 py-2 text-sm focus:outline-none"
+                   style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);color:#e8f5e8;font-family:'Share Tech Mono',monospace;font-size:0.75rem">
+            <button type="submit"
+                    class="px-4 py-2 rounded-lg transition flex-shrink-0"
+                    style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#8a9a8a;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.8rem"
+                    onmouseover="this.style.color='#d4ddd4'" onmouseout="this.style.color='#8a9a8a'">
+                💾 SAUVEGARDER
+            </button>
+        </form>
+    </div>
+</div>
+
 <div class="max-w-7xl mx-auto px-4 py-8">
 
     {{-- Header --}}

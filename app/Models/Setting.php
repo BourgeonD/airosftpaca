@@ -1,19 +1,21 @@
 <?php
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $fillable = ['key', 'value'];
+    protected $primaryKey = 'key';
+    public $incrementing  = false;
+    protected $keyType    = 'string';
+    protected $fillable   = ['key', 'value'];
 
-    public static function get(string $key, mixed $default = null): mixed
+    public static function get(string $key, $default = null)
     {
-        $setting = static::where('key', $key)->first();
-        return $setting ? $setting->value : $default;
+        $s = static::find($key);
+        return $s ? $s->value : $default;
     }
 
-    public static function set(string $key, mixed $value): void
+    public static function set(string $key, $value): void
     {
         static::updateOrCreate(['key' => $key], ['value' => $value]);
     }
