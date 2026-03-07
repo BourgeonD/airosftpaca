@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html { font-family: 'Exo 2', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Rajdhani', sans-serif; }
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-olive-600 hover:bg-olive-500 text-white font-semibold px-4 py-2 rounded transition;
+    }
+    .btn-secondary {
+        @apply border border-zinc-600 hover:border-zinc-400 text-zinc-300 hover:text-white px-4 py-2 rounded transition;
+    }
+    .card {
+        @apply bg-zinc-900 border border-zinc-800 rounded-lg;
+    }
+    .form-input {
+        @apply bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-olive-500 transition w-full;
+    }
+    .badge-role-admin {
+        @apply bg-red-900/50 text-red-400 text-xs px-2 py-0.5 rounded font-medium;
+    }
+    .badge-role-leader {
+        @apply bg-olive-900/50 text-olive-400 text-xs px-2 py-0.5 rounded font-medium;
+    }
+    .badge-role-moderator {
+        @apply bg-blue-900/50 text-blue-400 text-xs px-2 py-0.5 rounded font-medium;
+    }
+    .badge-role-user {
+        @apply bg-zinc-800 text-zinc-400 text-xs px-2 py-0.5 rounded font-medium;
+    }
+}

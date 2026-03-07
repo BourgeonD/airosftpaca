@@ -1,0 +1,117 @@
+@extends('layouts.app')
+@section('title', 'Mon profil')
+@section('content')
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="font-bold text-2xl text-white">Mon profil</h1>
+        <a href="{{ route('profile.show', auth()->user()) }}" class="text-sm text-zinc-400 hover:text-white transition">
+            Voir mon profil public →
+        </a>
+    </div>
+
+    @if(session('success'))
+        <div class="bg-green-900/50 border border-green-700 text-green-300 px-4 py-3 rounded-lg text-sm mb-6">
+            ✓ {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Infos profil --}}
+    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data"
+          class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-5 mb-6">
+        @csrf @method('PUT')
+
+        <h2 class="font-bold text-white text-lg pb-2 border-b border-zinc-800">Informations personnelles</h2>
+
+        <div class="flex items-center gap-5">
+            <img src="{{ auth()->user()->avatar ? Storage::url(auth()->user()->avatar) : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name).'&background=166534&color=fff&size=80' }}"
+                 class="w-20 h-20 rounded-xl object-cover border border-zinc-700">
+            <div class="flex-1">
+                <label class="block text-sm text-zinc-400 mb-1">Photo de profil</label>
+                <input type="file" name="avatar" accept="image/*"
+                       class="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-600">
+                <p class="text-xs text-zinc-600 mt-1">JPG, PNG — max 2Mo</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-1">Pseudo (affiché publiquement)</label>
+                <input type="text" name="pseudo" value="{{ old('pseudo', auth()->user()->pseudo) }}"
+                       placeholder="{{ auth()->user()->name }}"
+                       class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+                @error('pseudo')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-1">Localisation</label>
+                <input type="text" name="location" value="{{ old('location', auth()->user()->location) }}"
+                       placeholder="Marseille, Nice..."
+                       class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-1">Date de naissance</label>
+                <input type="date" name="birthdate"
+                       value="{{ old('birthdate', auth()->user()->birthdate ? \Carbon\Carbon::parse(auth()->user()->birthdate)->format('Y-m-d') : '') }}"
+                       class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+            </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-1">Style de jeu</label>
+                <input type="text" name="game_style" value="{{ old('game_style', auth()->user()->game_style) }}"
+                       placeholder="CQB, Woodland, Sniper..."
+                       class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm text-zinc-400 mb-1">Présentation / Bio</label>
+            <textarea name="bio" rows="3" placeholder="Parle-toi un peu..."
+                      class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600 resize-none">{{ old('bio', auth()->user()->bio) }}</textarea>
+        </div>
+
+        <div>
+            <label class="block text-sm text-zinc-400 mb-1">Équipement principal</label>
+            <textarea name="equipment" rows="2"
+                      placeholder="AEG principal, répliques secondaires, équipement tactique..."
+                      class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600 resize-none">{{ old('equipment', auth()->user()->equipment) }}</textarea>
+        </div>
+
+        <button type="submit" class="bg-green-800 hover:bg-green-700 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+            Sauvegarder
+        </button>
+    </form>
+
+    {{-- Mot de passe --}}
+    <form action="{{ route('profile.password') }}" method="POST"
+          class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+        @csrf @method('PUT')
+
+        <h2 class="font-bold text-white text-lg pb-2 border-b border-zinc-800">Changer le mot de passe</h2>
+
+        <div>
+            <label class="block text-sm text-zinc-400 mb-1">Mot de passe actuel</label>
+            <input type="password" name="current_password" required
+                   class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+            @error('current_password')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-1">Nouveau mot de passe</label>
+                <input type="password" name="password" required minlength="8"
+                       class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+            </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-1">Confirmer</label>
+                <input type="password" name="password_confirmation" required
+                       class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-green-600">
+            </div>
+        </div>
+
+        <button type="submit" class="border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white font-medium px-6 py-2.5 rounded-lg transition">
+            Changer le mot de passe
+        </button>
+    </form>
+</div>
+@endsection
