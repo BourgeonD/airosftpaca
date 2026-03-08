@@ -337,6 +337,23 @@ class SquadController extends Controller
             'is_recruiting' => $request->boolean('is_recruiting', true),
         ]);
 
+        // Mail à l'admin
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            try {
+                \Illuminate\Support\Facades\Mail::send('emails.admin-role-request', [
+                    'requester' => auth()->user(),
+                    'squadName' => $request->squad_name,
+                    'city'      => $request->city,
+                    'message'   => $request->message,
+                    'admin'     => $admin,
+                ], function ($m) use ($admin) {
+                    $m->to($admin->email)->subject('[AirsoftPACA] Nouvelle demande de création d\'escouade');
+                });
+            } catch (\Exception $e) {
+                \Log::error('Admin mail failed: ' . $e->getMessage());
+            }
+        }
         return redirect()->route('home')->with('success', 'Demande envoyée. Un administrateur l\'examinera prochainement.');
     }
 
