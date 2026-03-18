@@ -111,6 +111,12 @@
                    onmouseover="this.style.color='#d4ddd4'" onmouseout="this.style.color='{{ request()->routeIs('forum.*') ? '#4ade80' : '#8a9a8a' }}'">
                     FORUM
                 </a>
+                <a href="{{ route('listings.index') }}"
+                   class="px-3 py-2 text-sm rounded transition"
+                   style="font-family:'Barlow Condensed',sans-serif;font-weight:500;letter-spacing:0.06em;color:{{ request()->routeIs('listings.*') ? '#4ade80' : '#8a9a8a' }}"
+                   onmouseover="this.style.color='#d4ddd4'" onmouseout="this.style.color='{{ request()->routeIs('listings.*') ? '#4ade80' : '#8a9a8a' }}'">
+                    ANNONCES
+                </a>
             </div>
 
             {{-- User menu --}}

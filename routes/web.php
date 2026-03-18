@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SquadController;
+use App\Http\Controllers\ListingController;
+use App\Http\Controllers\Admin\ListingCategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventPhotoController;
 use App\Http\Controllers\EventInvitationController;
@@ -134,7 +136,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/demandes-chef/{roleRequest}/approuver',   [AdminController::class, 'approveRoleRequest'])->name('role-requests.approve');
     Route::post('/demandes-chef/{roleRequest}/rejeter',     [AdminController::class, 'rejectRoleRequest'])->name('role-requests.reject');
     Route::post('/maintenance/section/{section}/toggle', function(string $section) {
-        $allowed = ['maintenance_forum','maintenance_events','maintenance_squads','maintenance_profiles'];
+        $allowed = ['maintenance_forum','maintenance_events','maintenance_squads','maintenance_profiles','maintenance_listings'];
         if (!in_array($section, $allowed)) abort(404);
         \App\Models\Setting::set($section, \App\Models\Setting::get($section) === '1' ? '0' : '1');
         return back()->with('success', 'Section mise à jour.');
@@ -148,6 +150,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         \App\Models\Setting::set('maintenance_message', $r->message);
         return back()->with('success', 'Message mis à jour.');
     })->name('admin.maintenance.message');
+    Route::get('/annonces-categories',          [ListingCategoryController::class, 'index'])->name('listing-categories.index');
+    Route::post('/annonces-categories',         [ListingCategoryController::class, 'store'])->name('listing-categories.store');
+    Route::put('/annonces-categories/{listingCategory}', [ListingCategoryController::class, 'update'])->name('listing-categories.update');
+    Route::delete('/annonces-categories/{listingCategory}', [ListingCategoryController::class, 'destroy'])->name('listing-categories.destroy');
     Route::get('/signalements',                             [ProfileController::class, 'adminReports'])->name('reports');
     Route::post('/signalements/{report}/ignorer',           [ProfileController::class, 'dismissReport'])->name('reports.dismiss');
     Route::get('/escouades',                                [AdminController::class, 'squads'])->name('squads');
@@ -182,3 +188,16 @@ Route::post('/contact', function(\Illuminate\Http\Request $r) {
 
     return back()->with('success', 'Votre message a bien été envoyé ! Nous vous répondrons à '.$r->email.' dans les plus brefs délais.');
 })->name('contact.send');
+
+// Annonces / Marketplace
+Route::get('/annonces', [ListingController::class, 'index'])->name('listings.index');
+Route::middleware('auth')->group(function() {
+    Route::get('/mes-annonces', [ListingController::class, 'myListings'])->name('listings.my');
+    Route::get('/annonces/creer', [ListingController::class, 'create'])->name('listings.create');
+    Route::post('/annonces', [ListingController::class, 'store'])->name('listings.store');
+    Route::get('/annonces/{listing}/modifier', [ListingController::class, 'edit'])->name('listings.edit');
+    Route::put('/annonces/{listing}', [ListingController::class, 'update'])->name('listings.update');
+    Route::post('/annonces/{listing}/cloturer', [ListingController::class, 'close'])->name('listings.close');
+    Route::delete('/annonces/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
+});
+Route::get('/annonces/{listing}', [ListingController::class, 'show'])->name('listings.show');

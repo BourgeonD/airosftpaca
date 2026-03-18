@@ -56,6 +56,7 @@ $sections = [
     'maintenance_events'   => ['label' => 'PARTIES',   'url' => 'parties',   'icon' => '🎯'],
     'maintenance_squads'   => ['label' => 'ESCOUADES', 'url' => 'escouades', 'icon' => '🛡'],
     'maintenance_profiles' => ['label' => 'PROFILS',   'url' => 'joueur',    'icon' => '👤'],
+    'maintenance_listings'  => ['label' => 'ANNONCES',  'url' => 'annonces',  'icon' => '🏪'],
 ];
 @endphp
 <div class="rounded-xl mb-6 overflow-hidden" style="background:#252a26;border:1px solid rgba(255,255,255,0.07)">
@@ -160,7 +161,6 @@ $sections = [
                 <p style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#4a5a4a;margin-top:0.15rem">Liste, suppression</p>
             </div>
         </a>
-
         <a href="{{ route('admin.role-requests') }}"
            class="flex items-center gap-4 p-5 rounded-xl transition-all group"
            style="background:#252a26;border:1px solid {{ $stats['pending_roles'] > 0 ? 'rgba(249,115,22,0.25)' : 'rgba(255,255,255,0.07)' }}"

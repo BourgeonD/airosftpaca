@@ -13,6 +13,7 @@ class CheckMaintenance
         'maintenance_events'   => 'parties',
         'maintenance_squads'   => 'escouades',
         'maintenance_profiles' => 'joueur',
+        'maintenance_listings'  => 'annonces',
     ];
 
     public function handle(Request $request, Closure $next)
