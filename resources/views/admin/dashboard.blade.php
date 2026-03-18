@@ -49,6 +49,54 @@
     </div>
 </div>
 
+{{-- ── Maintenance sections ── --}}
+@php
+$sections = [
+    'maintenance_forum'    => ['label' => 'FORUM',     'url' => 'forum',     'icon' => '💬'],
+    'maintenance_events'   => ['label' => 'PARTIES',   'url' => 'parties',   'icon' => '🎯'],
+    'maintenance_squads'   => ['label' => 'ESCOUADES', 'url' => 'escouades', 'icon' => '🛡'],
+    'maintenance_profiles' => ['label' => 'PROFILS',   'url' => 'joueur',    'icon' => '👤'],
+];
+@endphp
+<div class="rounded-xl mb-6 overflow-hidden" style="background:#252a26;border:1px solid rgba(255,255,255,0.07)">
+    <div class="px-5 py-4" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:#d4ddd4;letter-spacing:0.06em">🔧 MAINTENANCE PAR SECTION</p>
+        <p style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#4a5a4a;margin-top:2px">Bloquer l'accès à une section spécifique sans affecter le reste du site</p>
+    </div>
+    <div class="px-5 py-4 grid grid-cols-2 gap-3">
+        @foreach($sections as $key => $section)
+        @php $on = \App\Models\Setting::get($key) === '1'; @endphp
+        <div class="rounded-lg p-4 flex items-center justify-between"
+             style="background:{{ $on ? 'rgba(239,68,68,0.08)' : 'rgba(0,0,0,0.2)' }};border:1px solid {{ $on ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)' }}">
+            <div class="flex items-center gap-3">
+                <span style="font-size:1.1rem">{{ $section['icon'] }}</span>
+                <div>
+                    <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:{{ $on ? '#fca5a5' : '#8a9a8a' }};letter-spacing:0.05em">
+                        {{ $section['label'] }}
+                    </p>
+                    <p style="font-family:'Share Tech Mono',monospace;font-size:0.58rem;color:{{ $on ? 'rgba(239,68,68,0.5)' : '#3a4a3a' }}">
+                        {{ $on ? 'EN MAINTENANCE' : 'ACCESSIBLE' }}
+                    </p>
+                </div>
+            </div>
+            <form action="{{ route('admin.admin.maintenance.section.toggle', $key) }}" method="POST">
+                @csrf
+                <button type="submit"
+                        style="padding:5px 12px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.06em;cursor:pointer;
+                            {{ $on
+                                ? 'background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#86efac'
+                                : 'background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#fca5a5' }}"
+                        onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                    {{ $on ? '✓ RÉTABLIR' : '⚠ BLOQUER' }}
+                </button>
+            </form>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+
+
 <div class="max-w-7xl mx-auto px-4 py-8">
 
     {{-- Header --}}

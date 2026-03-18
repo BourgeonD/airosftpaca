@@ -133,6 +133,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/demandes-chef',                            [AdminController::class, 'roleRequests'])->name('role-requests');
     Route::post('/demandes-chef/{roleRequest}/approuver',   [AdminController::class, 'approveRoleRequest'])->name('role-requests.approve');
     Route::post('/demandes-chef/{roleRequest}/rejeter',     [AdminController::class, 'rejectRoleRequest'])->name('role-requests.reject');
+    Route::post('/maintenance/section/{section}/toggle', function(string $section) {
+        $allowed = ['maintenance_forum','maintenance_events','maintenance_squads','maintenance_profiles'];
+        if (!in_array($section, $allowed)) abort(404);
+        \App\Models\Setting::set($section, \App\Models\Setting::get($section) === '1' ? '0' : '1');
+        return back()->with('success', 'Section mise à jour.');
+    })->name('admin.maintenance.section.toggle');
+
     Route::post('/maintenance/toggle', function() {
         \App\Models\Setting::set('maintenance_mode', \App\Models\Setting::get('maintenance_mode') === '1' ? '0' : '1');
         return back()->with('success', 'Mode maintenance mis à jour.');
