@@ -301,7 +301,7 @@
             </div>
             <div class="flex gap-6" style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:0.08em">
                 <a href="{{ route('rules') }}" style="color:#3a4a3a" onmouseover="this.style.color='#8a9a8a'" onmouseout="this.style.color='#3a4a3a'">RÈGLES</a>
-                <a href="#" style="color:#3a4a3a" onmouseover="this.style.color='#8a9a8a'" onmouseout="this.style.color='#3a4a3a'">CONTACT</a>
+                <a href="{{ route('contact') }}" style="color:#3a4a3a" onmouseover="this.style.color='#8a9a8a'" onmouseout="this.style.color='#3a4a3a'">CONTACT</a>
             </div>
         </div>
     </div>

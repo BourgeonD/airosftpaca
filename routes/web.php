@@ -148,3 +148,30 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/regles',  [AdminController::class, 'editRules'])->name('rules.edit');
     Route::post('/regles', [AdminController::class, 'updateRules'])->name('rules.update');
 });
+
+// Page contact
+Route::get('/contact', function() {
+    return view('contact');
+})->name('contact');
+
+Route::post('/contact', function(\Illuminate\Http\Request $r) {
+    $r->validate([
+        'email'   => 'required|email',
+        'name'    => 'required|string|max:100',
+        'subject' => 'required|string|max:150',
+        'message' => 'required|string|max:3000',
+    ]);
+
+    \Illuminate\Support\Facades\Mail::send('emails.contact', [
+        'senderName'    => $r->name,
+        'senderEmail'   => $r->email,
+        'subject'       => $r->subject,
+        'body'          => $r->message,
+    ], function($m) use ($r) {
+        $m->to('contact@airsoftpaca.fr')
+          ->replyTo($r->email, $r->name)
+          ->subject('[AirsoftPACA] Contact : '.$r->subject);
+    });
+
+    return back()->with('success', 'Votre message a bien été envoyé ! Nous vous répondrons à '.$r->email.' dans les plus brefs délais.');
+})->name('contact.send');
